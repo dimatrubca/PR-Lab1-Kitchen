@@ -9,10 +9,11 @@ class FoodItemState(enum.Enum):
 
 
 class FoodItem:
-    def __init__(self, order_id, item_id, preparation_time) -> None:
+    def __init__(self, order_id, item_id, preparation_time, apparatus) -> None:
         self.order_id = order_id
         self.item_id = item_id
         self.estimated_preparation_time = None
         self.preparation_time = preparation_time
         self.state:FoodItemState = FoodItemState.NOT_DISTRIBUTED
+        self.apparatus = apparatus
         self.cook_id = None

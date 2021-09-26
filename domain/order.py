@@ -1,6 +1,6 @@
 
 import datetime
-from domain.food_item import FoodItem
+from domain.food_item import FoodItem, FoodItemState
 from typing import List
 import enum
 
@@ -14,12 +14,16 @@ class Order:
         self.priority = priority
         self.max_wait = max_wait
         self.pick_up_time = pick_up_time
-        self.received_time = datetime.datetime.utcnow()
+        self.received_time = datetime.datetime.utcnow().timestamp()
         self.prepared_time = None
         self.cooking_time = None
-        self.food_items:List[FoodItem] = [FoodItem(order_id, item_id,  None) for item_id in items]
+        self.food_items:List[FoodItem] = [FoodItem(order_id, item_id,  1, "stove") for item_id in items]
 
     
     def is_finished(self):
-        return sum(self.items_processed) == len(self.items)
+        for item in self.food_items:
+            if item.state != FoodItemState.PREPARED:
+                return False
+
+        return True
         
