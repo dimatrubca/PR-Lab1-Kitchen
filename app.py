@@ -8,6 +8,7 @@ app = Flask(__name__)
 kitchen = None
 
 
+
 @app.route('/order', methods=['POST'])
 def receive_order():
     order = request.json
