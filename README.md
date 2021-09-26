@@ -1,6 +1,6 @@
 # Kitchen WebServer
 This is a component for the Restauram Simulation project.<br>
-Dinning Hall component: <a href="https://github.com/dimatrubca/PR-Lab1-Kitchen">link</a>
+Dinning Hall component: <a href="https://github.com/dimatrubca/PR-lab1-DiningHall">link</a>
 
 ## Usage
 Create bridge network: ```docker network create kitchen-nt```<br>
