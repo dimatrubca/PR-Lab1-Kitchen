@@ -1,0 +1,20 @@
+[
+    {
+        "rank": 3,
+        "proficiency": 4,
+        "name": "Venceslav",
+        "catch-phrase": "Just ponder!"
+    },
+    {
+        "rank": 2,
+        "proficiency": 3,
+        "name": "Grigorie",
+        "catch-phrase": "Think faster!"
+    },
+    {
+        "rank": 1,
+        "proficiency": 1,
+        "name": "Valentin",
+        "catch-phrase": "Think faster!"
+    }
+]

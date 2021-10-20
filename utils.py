@@ -1,17 +1,8 @@
+import json
+from os import name
 from domain.order import Order
+from domain.cook import Cook
 
-def request_order_to_order(request_order):
-    order_id = request_order['order_id']
-    table_id = request_order['table_id']
-    waiter_id = request_order['waiter_id']
-    items = request_order['items']
-    priority = request_order['priority']
-    max_wait = request_order['max_wait']
-    pick_up_time = request_order['pick_up_time']
-
-    order = Order(order_id, table_id, waiter_id, items, priority, pick_up_time, max_wait)
-
-    return order
 
 def order_to_distribution(order: Order):
     distribution = {
@@ -27,3 +18,15 @@ def order_to_distribution(order: Order):
     }
 
     return distribution
+
+def read_cooks(kithen):
+    cooks = []
+
+    with open('cooks.json') as file:
+        data  = json.load(file)
+
+    cooks = [Cook(kitchen=kithen, id=i, 
+                    proficiency=cook['proficiency'], 
+                    name=cook['name'], catch_phrase=cook['catch-phrase']) for i, cook in enumerate(data)]
+
+    return cooks

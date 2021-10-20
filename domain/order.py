@@ -4,8 +4,10 @@ from domain.food_item import FoodItem, FoodItemState
 from typing import List
 import enum
 
+from domain.menu import RestaurantMenu
+
 class Order:
-    def __init__(self, order_id, table_id, waiter_id, items, priority, pick_up_time, max_wait) -> None:
+    def __init__(self, order_id, table_id, waiter_id, items, priority, pick_up_time, max_wait, menu: RestaurantMenu) -> None:
         self.order_id = order_id
         self.table_id = table_id
         self.waiter_id = waiter_id
@@ -17,7 +19,7 @@ class Order:
         self.received_time = datetime.datetime.utcnow().timestamp()
         self.prepared_time = None
         self.cooking_time = None
-        self.food_items:List[FoodItem] = [FoodItem(order_id, item_id,  1, "stove") for item_id in items]
+        self.food_items:List[FoodItem] = [FoodItem(order_id, item_id, menu) for item_id in items]
 
     
     def is_finished(self):
