@@ -25,7 +25,7 @@ def read_cooks(kithen):
     with open('cooks.json') as file:
         data  = json.load(file)
 
-    cooks = [Cook(kitchen=kithen, id=i, 
+    cooks = [Cook(kitchen=kithen, id=i,  rank=cook['rank'],
                     proficiency=cook['proficiency'], 
                     name=cook['name'], catch_phrase=cook['catch-phrase']) for i, cook in enumerate(data)]
 

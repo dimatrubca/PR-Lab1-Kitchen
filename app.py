@@ -5,9 +5,10 @@ import threading
 from flask import Flask, request
 from flask.json import jsonify
 import utils
+import time
 
 
-logging.basicConfig(level=logging.WARN, format='%(asctime)s:%(name)s:%(message)s', datefmt="%m/%d/%Y %I:%M:%S %p")
+logging.basicConfig(level=logging.INFO, format='%(asctime)s:%(name)s:%(message)s', datefmt="%m/%d/%Y %I:%M:%S %p")
 logger = logging.getLogger(__name__)
 
 
@@ -16,6 +17,8 @@ kitchen = None
 
 @app.route('/order', methods=['POST'])
 def receive_order():
+    logger.warn(f"Received order, time: {time.time()}")
+
     order = request.json
 
     logging.info(f"Order {order['order_id']} received. Notifying cooks...")

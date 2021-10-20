@@ -20,6 +20,7 @@ class Order:
         self.prepared_time = None
         self.cooking_time = None
         self.food_items:List[FoodItem] = [FoodItem(order_id, item_id, menu) for item_id in items]
+        self.is_delivered = False
 
     
     def is_finished(self):
@@ -29,3 +30,7 @@ class Order:
 
         return True
         
+    def __lt__(self, other):
+        selfPriority = (self.priority, self.order_id)
+        otherPriority = (other.priority, other.order_id)
+        return selfPriority < otherPriority

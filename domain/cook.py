@@ -2,6 +2,8 @@
 
 import threading
 
+from flask import app
+
 from domain.cooking_aparatus import CookingAparatus
 from domain.order import FoodItem
 from domain.food_item import FoodItem, FoodItemState
@@ -12,7 +14,7 @@ import time
 logger = logging.getLogger(__name__)
 
 class Cook:
-    def __init__(self, kitchen, id, rank=2, proficiency=2, name="Anonymous", catch_phrase="Don't"):
+    def __init__(self, kitchen, id, rank, proficiency, name="Anonymous", catch_phrase="Don't"):
         self.rank = rank    
         self.proficiency = proficiency
         self.name = name
@@ -28,19 +30,24 @@ class Cook:
     def start_working(self):
         logger.info(f"{self} started working")
         while True:
+         #   print(f"Cook {self.id} ... {self.cooking_items_cnt} ... {self.find_apparatus('oven')} ...")
             if not self.is_available():
                 continue #TODO: sleep
             
             food_item, apparatus = self.find_food_item()
+
+            time.sleep(config.TIME_DELTA)
 
             if not food_item:
                 continue #TODO: sleep
             else:
                 self.cooking_items_cnt += 1
             
+            
       #      print("Sleepping!")
 
             threading.Thread(target=self.prepare_food_item, args=(food_item, apparatus)).start()
+            
 
 
     def find_food_item(self):
@@ -62,7 +69,7 @@ class Cook:
 
 
     def search_order_list(self):
-        for order in self.kitchen.order_list:
+        for _, order in self.kitchen.order_list.queue:
             for food_item in order.food_items:
                 if food_item.state == FoodItemState.NOT_DISTRIBUTED and self.matches_rank(food_item):
                     apparatus = None
@@ -90,11 +97,14 @@ class Cook:
         
         self.cooking_items_cnt -= 1
 
+        time.sleep(config.TIME_DELTA) #todo:remove
+
         logging.warn(f"Cook {self.id} finished preparing food item {food_item.item_id} from order {food_item.order_id}")
 
 
     def matches_rank(self, order_item: FoodItem):
-        return self.proficiency in [order_item.complexity, order_item.complexity - 1]
+      #  print(self.rank, order_item.complexity)
+        return (self.rank == order_item.complexity) or (self.rank == order_item.complexity + 1)
 
 
     def is_available(self):
