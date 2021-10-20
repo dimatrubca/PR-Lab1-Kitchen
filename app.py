@@ -7,7 +7,7 @@ from flask.json import jsonify
 import utils
 
 
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s:%(name)s:%(message)s', datefmt="%m/%d/%Y %I:%M:%S %p")
+logging.basicConfig(level=logging.WARN, format='%(asctime)s:%(name)s:%(message)s', datefmt="%m/%d/%Y %I:%M:%S %p")
 logger = logging.getLogger(__name__)
 
 
@@ -18,10 +18,9 @@ kitchen = None
 def receive_order():
     order = request.json
 
-    order_obj = utils.request_order_to_order(order)
-    logging.info(f"Order {order_obj.order_id} received. Notifying cooks...")
+    logging.info(f"Order {order['order_id']} received. Notifying cooks...")
 
-    kitchen.receive_order(order_obj)
+    kitchen.receive_order(order)
 
     return jsonify(order)
 

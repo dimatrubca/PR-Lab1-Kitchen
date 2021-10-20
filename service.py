@@ -4,6 +4,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 DINNING_HALL_BASE_URL = "http://dinning-hall-container:5001"
+#DINNING_HALL_BASE_URL = "http://localhost:"
 
 def send_distribution_request(distribution):
     logging.info(f"Sending post request to {DINNING_HALL_BASE_URL}/distribution, id = " + str(distribution['order_id']))
