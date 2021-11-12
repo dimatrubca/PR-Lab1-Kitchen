@@ -1,6 +1,9 @@
 from datetime import datetime
+from queue import PriorityQueue
 import logging
+import time
 from typing import List
+from config import COOKS, TIME_DELTA
 from domain.menu import RestaurantMenu
 from domain.order import FoodItem, Order
 import threading
@@ -17,9 +20,9 @@ logger = logging.getLogger(__name__)
 
 class Kitchen():
     def __init__(self, ovens_n=OVENS, stoves_n=STOVES) -> None:
-        self.order_list:List[Order] = []
+        self.order_list = PriorityQueue()
         self.menu:RestaurantMenu = RestaurantMenu()
-        self.cooks = utils.read_cooks(self)
+        self.cooks = utils.read_cooks(self)[:COOKS]
         self.cooking_apparatus = {
             "oven": [CookingAparatus("oven") for i in range(ovens_n)],
             "stove": [CookingAparatus("stove") for i in range(stoves_n)] 
@@ -29,29 +32,30 @@ class Kitchen():
         self.apparatus_mutex = threading.Lock()
         
     
-
-
     def run_simulation(self):
         for cook in self.cooks:
             threading.Thread(target=cook.start_working).start() 
 
         while True:
-            finished_orders = False
-
-            for order in self.order_list:
-                if order.is_finished():
+           # print("Order list:", self.order_list)
+            for _, order in self.order_list.queue: #todo: lock?
+             #   print(order.order_id, order.is_finished())
+                if order.is_finished() and order.is_delivered == False: # todo: add counter for foods
                     logging.info(f"order {order.order_id} is ready!")
 
-                    finished_orders = True
                     order.cooking_time = datetime.utcnow().timestamp() - order.received_time
+                    order.is_delivered = True
                     distribution = utils.order_to_distribution(order)
 
                     service.send_distribution_request(distribution)
 
-            if finished_orders:
-                self.order_list_mutex.acquire()
-                self.order_list[:] = [order for order in self.order_list if not order.is_finished()]
-                self.order_list_mutex.release()
+                    break
+
+            while not self.order_list.empty() and self.order_list.queue[0][1].is_finished():
+                top = self.order_list.get()
+                print("TOP:", top)
+
+            time.sleep(TIME_DELTA)
 
 
     def receive_order(self, request_order):
@@ -65,7 +69,7 @@ class Kitchen():
 
         order = Order(order_id, table_id, waiter_id, items, priority, pick_up_time, max_wait, self.menu)
 
-        self.order_list.append(order)
+        self.order_list.put((-order.priority, order))
 
 
     
